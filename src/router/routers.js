@@ -59,7 +59,7 @@ export default [
           icon: 'md-create',
           title: '新建任务'
         },
-        component: () => import('@/view/error-page/404.vue')
+        component: () => import('@/view/task/import-task.vue')
       },
       {
         path: 'update_paste_page',

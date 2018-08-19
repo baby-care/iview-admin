@@ -42,14 +42,14 @@ class httpRequest {
           // Spin.hide()
         }, 500)
       }
-      if (data.code !== 200) {
+      if (res.status !== 200) {
         // 后端服务在个别情况下回报201，待确认
-        if (data.code === 401) {
+        if (res.status === 401) {
           Cookies.remove(TOKEN_KEY)
           window.location.href = window.location.pathname + '#/login'
           Message.error('未登录，或登录失效，请登录')
         } else {
-          if (data.msg) Message.error(data.msg)
+          if (res.msg) Message.error(res.msg)
         }
         return false
       }
@@ -82,7 +82,8 @@ class httpRequest {
     this.interceptors(instance, options.url)
     options = Object.assign({}, options)
     this.queue[options.url] = instance
-    return instance(options)
+    let result = instance(options)
+    return result
   }
 }
 export default httpRequest
