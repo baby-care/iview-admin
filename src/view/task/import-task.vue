@@ -1,5 +1,5 @@
 <template>
-  <Row :gutter="24">
+  <Card>
     <Form :model="importSetting" :label-width="80">
       <Row :gutter="24">
         <Col span="12">
@@ -76,17 +76,20 @@
 
           <Col v-if="importSetting.hasFaceDetect">
             <FormItem label="置信度">
-              <InputNumber :max="1" :min="0.1" :step="0.01" size="large" v-model="importSetting.facedetect.confidence" placeholder="人脸检测置信度" style="width:100%"></InputNumber>
+              <InputNumber :max="1" :min="0.1" :step="0.01" size="large" v-model="importSetting.facedetect.confidence"
+                           placeholder="人脸检测置信度" style="width:100%"></InputNumber>
             </FormItem>
 
             <FormItem label="人脸尺寸">
               <Row>
                 <Col span="11" style="text-align: left">
-                  <InputNumber :min="1" :step="1" placeholder="高度" v-model="importSetting.facedetect.size.height" style="width:100%"></InputNumber>
+                  <InputNumber :min="100" :step="1" placeholder="高度" v-model="importSetting.facedetect.size.height"
+                               style="width:100%"></InputNumber>
                 </Col>
                 <Col span="2" style="text-align: center">--</Col>
                 <Col span="11" style="text-align: left">
-                  <InputNumber  :min="1" :step="1" placeholder="宽度" v-model="importSetting.facedetect.size.width" style="width:100%"></InputNumber>
+                  <InputNumber :min="100" :step="1" placeholder="宽度" v-model="importSetting.facedetect.size.width"
+                               style="width:100%"></InputNumber>
                 </Col>
               </Row>
             </FormItem>
@@ -106,7 +109,7 @@
       </Col>
 
     </Form>
-  </Row>
+  </Card>
 </template>
 
 <script>
