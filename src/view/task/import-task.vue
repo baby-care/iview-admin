@@ -16,7 +16,7 @@
 
         <Col span="12">
           <FormItem label="导入用户">
-            <Select v-model="importSetting.account">
+            <Select v-model="importSetting.account" filterable>
               <Option v-for="item in sourceInfo.account" :value="item">{{item}}</Option>
             </Select>
           </FormItem>
@@ -30,24 +30,24 @@
 
         <Col span="12">
           <FormItem label="数据来源">
-            <Select v-model="importSetting.account">
-              <Option v-for="item in sourceInfo.account" :value="item">{{item}}</Option>
+            <Select v-model="importSetting.source" filterable>
+              <Option v-for="item in sourceInfo.source" :value="item">{{item}}</Option>
             </Select>
           </FormItem>
         </Col>
 
         <Col span="12">
           <FormItem label="数据分类">
-            <Select v-model="importSetting.category">
-              <Option v-for="(_, item) in sourceInfo.category" :value="item">{{item}}</Option>
+            <Select v-model="importSetting.category" @on-change="onSelectCategory" filterable>
+              <Option v-for="item in sourceInfo.category" :value="item">{{item}}</Option>
             </Select>
           </FormItem>
         </Col>
 
         <Col span="12">
           <FormItem label="子分类(tag)">
-            <Select v-model="importSetting.subcategory">
-              <Option v-for="(_, item) in sourceInfo.subcategory" :value="item">{{item}}</Option>
+            <Select v-model="importSetting.subcategory" placeholder="先选择分类，才能勾选此项" filterable>
+              <Option v-for="item in subcategoryCache" :value="item">{{item}}</Option>
             </Select>
           </FormItem>
         </Col>
@@ -101,12 +101,12 @@
         </Col>
       </Row>
 
-      <Col span="24">
+      <Row span="24">
         <FormItem align="center">
           <Button type="primary">提交</Button>
           <Button style="margin-left: 8px">返回</Button>
         </FormItem>
-      </Col>
+      </Row>
 
     </Form>
   </Card>
@@ -121,19 +121,21 @@
     components: {CollapsedMenu},
     data() {
       return {
+        subcategoryCache: [],
         sourceInfo: {
           'account': ['pushenglin'],
           'source': ['fudu', 'subway'],
-          'category': {
-            'fruit': {
-              'apple': 100,
-              'peach': 1001
-            },
-            'subway': {
-              'elevator-head': 1000,
-              'failover': 10001
-            }
+          'subcategory': {
+            'fruit': [
+              'apple',
+              'peach'
+            ],
+            'subway': [
+              'elevator-head',
+              'failover'
+            ]
           },
+          'category': ["fruit", "subway"],
           'extract': [
             {
               'title': '无',
@@ -156,17 +158,15 @@
           ]
         },
         importSetting: {
-          account: null,
-          title: null,
-          data_path: null,
+          account: '',
+          title: '',
+          data_path: '',
           desc: '',
           hasExtract: false,
           hasFaceDetect: false,
-          source: {
-            source: null,
-            category: null,
-            subcategory: null
-          },
+          source: '',
+          category: '',
+          subcategory: '',
           extract: {
             method: 0,
             value: 1000
@@ -189,6 +189,11 @@
       },
       onSelectExtract: function () {
         this.importSetting.hasExtract = !!this.importSetting.extract.method;
+      },
+      onSelectCategory: function (category) {
+        this.subcategoryCache = category? this.sourceInfo.subcategory[category]:[];
+        this.importSetting.subcategory = this.subcategoryCache.length > 0? this.subcategoryCache[0]: '';
+        console.info("select cateogry %s, subcategoryCache %s", category, this.subcategoryCache);
       }
     },
     mounted: function () {
@@ -197,6 +202,13 @@
       // }).catch(err => {
       //   console.log(err)
       // })
-    }
+
+      // todo: 设置默认勾选值, 要注意在请求到数据后设置
+      this.importSetting.source = this.sourceInfo.source[0];
+      this.importSetting.category = this.sourceInfo.category[0];
+
+      this.subcategoryCache = this.sourceInfo.subcategory[this.importSetting.category];
+      this.importSetting.subcategory = this.sourceInfo.subcategory[this.importSetting.category][0];
+    },
   }
 </script>
